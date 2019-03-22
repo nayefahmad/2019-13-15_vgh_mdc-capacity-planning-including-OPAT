@@ -80,11 +80,12 @@ df4.dist_from_origin <-
   
   mutate(day_of_week = weekdays(Date)) %>% 
   
-  select(date_id, 
-         Date, 
-         day_of_week, 
-         metric, 
-         euclid_dist_from_origin) %>% 
+  select(date_id,
+         Date,
+         day_of_week,
+         metric,
+         euclid_dist_from_origin, 
+         everything()) %>%
   arrange(desc(euclid_dist_from_origin))
 
 # str(df4.dist_from_origin)
@@ -108,11 +109,29 @@ tail(df4.dist_from_origin %>%
 
 # Weekdays with 0 treatments: stat hols? 
 
+# The medoid day we identified was Thursday, 2017-07-06 (day_95)
+# Distance: 37.2 from origin
+# check: 
+#   median(df4.dist_from_origin$euclid_dist_from_origin)  
+# 34.9; pretty close to 37.2 
+
+
+# 5. plot distances from origin: ---------------
+df4.dist_from_origin %>% 
+  ggplot(aes(x = euclid_dist_from_origin)) + 
+  geom_histogram(fill = "skyblue4") + 
+  theme_light() + 
+  labs(title = "Distribution of Euclidean distances from origin", 
+       subtitle = "Distance measures cumulative total hours across all treatments for a single day") + 
+  theme(panel.grid.minor = element_line(colour = "grey95"), 
+      panel.grid.major = element_line(colour = "grey95"))
+      
 
 
 
 
-# 5. write outpus: ------------
+
+# 6. write outpus: ------------
 write_csv(df3.durations.dist,
       here::here("results", 
              "dst", 

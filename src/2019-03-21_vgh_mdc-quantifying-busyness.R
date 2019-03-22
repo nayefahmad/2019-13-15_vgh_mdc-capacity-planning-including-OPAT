@@ -52,13 +52,20 @@ rownames(m1.durations) <- df2.1_dur_wide$date_id
 
 
 # now find distances matrix:
-d1.euclid.distance <- 
+d1.manhattan.distance <- 
   dist(m1.durations, 
-       method = "euclidean")
+       method = "manhattan")
+
+# Manhattan dist is the same as summing hours across all treatments 
+
+# Reference: https://link.springer.com/chapter/10.1007/3-540-44503-X_27 "the
+# Manhattan distance metric L(1 norm) is consistently more preferable than the
+# Euclidean distance metric L(2 norm) for high dimensional data mining
+# applications"
 
 # convert dist matrix back to dataframe: 
 df3.durations.dist <- 
-  d1.euclid.distance %>% 
+  d1.manhattan.distance %>% 
   as.matrix() %>% 
   as.data.frame()  
   
@@ -70,7 +77,7 @@ df3.durations.dist <-
 df4.dist_from_origin <- 
   df3.durations.dist %>% 
   select(day_181) %>% 
-  rename(euclid_dist_from_origin = day_181) %>% 
+  rename(manhattan_dist_from_origin = day_181) %>% 
   
   mutate(metric = "total hours-all treatments") %>% 
   
@@ -84,9 +91,9 @@ df4.dist_from_origin <-
          Date,
          day_of_week,
          metric,
-         euclid_dist_from_origin, 
+         manhattan_dist_from_origin, 
          everything()) %>%
-  arrange(desc(euclid_dist_from_origin))
+  arrange(desc(manhattan_dist_from_origin))
 
 # str(df4.dist_from_origin)
 # summary(df4.dist_from_origin)
@@ -101,27 +108,28 @@ tail(df4.dist_from_origin %>%
 
 # 4. Notes: ---------------
 
-# Busiest day: 
-# Tuesday, 2017-06-06, with distance 59.2 from origin
+# Busiest days: 
+# Friday, 2017-08-25, with distance 84 from origin
+# Monday, 2017-09-11, with distance 84 from origin
+# Wednesday, 2017-09-20, with distance 84 from origin
 
 # Least busy weekday with nonzero volume: 
-# Thursday, 2017-06-15, with distance 27.3 from origin 
+# Thursday, 2017-06-15, with distance 50 from origin 
 
 # Weekdays with 0 treatments: stat hols? 
 
-# The medoid day we identified was Thursday, 2017-07-06 (day_95)
-# Distance: 37.2 from origin
+# The medoid day we identified was Thursday, 2017-09-13
 # check: 
-#   median(df4.dist_from_origin$euclid_dist_from_origin)  
-# 34.9; pretty close to 37.2 
+#   median(df4.dist_from_origin$manhattan_dist_from_origin)  # 65.5  
+#   df4.dist_from_origin %>% filter(Date == "2017-09-13")    # 67.5 
 
 
 # 5. plot distances from origin: ---------------
 df4.dist_from_origin %>% 
-  ggplot(aes(x = euclid_dist_from_origin)) + 
+  ggplot(aes(x = manhattan_dist_from_origin)) + 
   geom_histogram(fill = "skyblue4") + 
   theme_light() + 
-  labs(title = "Distribution of Euclidean distances from origin", 
+  labs(title = "Distribution of Manhattan distances from origin", 
        subtitle = "Distance measures cumulative total hours across all treatments for a single day") + 
   theme(panel.grid.minor = element_line(colour = "grey95"), 
       panel.grid.major = element_line(colour = "grey95"))

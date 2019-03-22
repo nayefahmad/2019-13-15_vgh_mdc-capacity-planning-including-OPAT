@@ -32,7 +32,7 @@ p1.volumes <-
   
   theme_light() +
   theme(panel.grid.minor = element_line(colour = "grey95"), 
-      panel.grid.major = element_line(colour = "grey95")); p1.volumes
+        panel.grid.major = element_line(colour = "grey95")); p1.volumes
 
 
 

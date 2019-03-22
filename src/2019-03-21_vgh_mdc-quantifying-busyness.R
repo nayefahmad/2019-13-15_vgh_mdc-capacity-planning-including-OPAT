@@ -57,18 +57,42 @@ d1.euclid.distance <-
 df3.durations.dist <- 
   d1.euclid.distance %>% 
   as.matrix() %>% 
-  as.data.frame() %>% 
+  as.data.frame()  
   
-  # we only care about distances from origin: 
+
+# 3. distances from origin: -------------
+df4.dist_from_origin <- 
+  df3.durations.dist %>% 
   select(day_181) %>% 
   rename(euclid_dist_from_origin = day_181) %>% 
+  
+  mutate(metric = "total hours-all treatments") %>% 
   
   # get back actual dates: 
   mutate(date_id = rownames(m1.durations)) %>% 
   inner_join(df2.1_dur_wide) %>% 
   
-  select(1:3) %>% 
+  select(date_id, 
+         Date, 
+         metric, 
+         euclid_dist_from_origin) %>% 
   arrange(desc(euclid_dist_from_origin))
 
-head(df3.durations.dist)
-str(df3.durations.dist)
+head(df4.dist_from_origin)
+str(df4.dist_from_origin)
+summary(df4.dist_from_origin)
+
+
+# 4. write outpus: ------------
+write_csv(df3.durations.dist,
+      here::here("results", 
+             "dst", 
+             "2019-03-21_distances-matrix.csv"))
+             
+
+write_csv(df4.dist_from_origin,
+          here::here("results", 
+                     "dst", 
+                     "2019-03-21_distances-from-origin.csv"))
+
+

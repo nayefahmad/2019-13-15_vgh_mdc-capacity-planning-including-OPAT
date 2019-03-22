@@ -11,34 +11,32 @@ library(tidyverse)
 library(magrittr)
 library(lubridate)
 
+# rm(list = ls())
 
 # 1. Read in data: ------------------------------
-options(readr.default_locale=readr::locale(tz="America/Los_Angeles"))
-
-# volumes: 
-df1.volumes <- 
-  read_csv(here::here("results",
-                      "clean data", 
-                      "2019-03-21_vgh_mdc-historical-treatment-volumes.csv"))  
+source(here::here("src", 
+                  "2019-03-21_vgh_mdc_read-data.R"))
 
 
-df1.volumes %<>%    
-  mutate(Date = mdy(Date))
+# 2. Distributions: ----------------------------
 
-str(df1.volumes)
-summary(df1.volumes)
-
-
-# durations: 
-df2.durations <- 
-  read_csv(here::here("results",
-                      "clean data", 
-                      "2019-03-21_vgh_mdc-historical-treatment-durations.csv"))  
+p1.volumes <- 
+  df1.volumes %>% 
+  ggplot(aes(x = treatment, 
+             y = volume)) + 
+  geom_boxplot() + 
+  theme_light() +
+  theme(panel.grid.minor = element_line(colour = "grey95"), 
+      panel.grid.major = element_line(colour = "grey95")); p1.volumes
 
 
-df2.durations %<>%    
-  mutate(Date = mdy(Date))
 
-str(df2.durations)
-summary(df2.durations)
 
+p2.durations <- 
+  df2.durations %>% 
+  ggplot(aes(x = treatment, 
+             y = duration)) + 
+  geom_boxplot() + 
+  theme_light() +
+  theme(panel.grid.minor = element_line(colour = "grey95"), 
+        panel.grid.major = element_line(colour = "grey95")); p2.durations

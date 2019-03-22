@@ -29,7 +29,10 @@ df2.1_dur_wide <-
             ) %>% 
   
   # add date_id: 
-  mutate(date_id = paste0("day_", 1:n()))
+  mutate(date_id = paste0("day_", 1:n())) %>% 
+  
+  # todo: drop EDIV?? 
+  select(-EDIV)
 
 
 # str(df2.1_dur_wide)
@@ -84,19 +87,26 @@ df4.dist_from_origin <-
          euclid_dist_from_origin) %>% 
   arrange(desc(euclid_dist_from_origin))
 
-
+# str(df4.dist_from_origin)
+# summary(df4.dist_from_origin)
 
 head(df4.dist_from_origin)
-tail(df4.dist_from_origin)
-str(df4.dist_from_origin)
-summary(df4.dist_from_origin)
+
+tail(df4.dist_from_origin %>% 
+       filter(!day_of_week %in% c("Sunday", "Saturday")), 
+     20)
+
 
 
 # 4. Notes: ---------------
 
-# Busiest day: Tuesday, 6 June 2017, with distance 59.4 from origin
+# Busiest day: 
+# Tuesday, 2017-06-06, with distance 59.2 from origin
 
-# Least busy weekday: Friday, 14 April 2017, with distance 2.010 from origin
+# Least busy weekday with nonzero volume: 
+# Thursday, 2017-06-15, with distance 27.3 from origin 
+
+# Weekdays with 0 treatments: stat hols? 
 
 
 

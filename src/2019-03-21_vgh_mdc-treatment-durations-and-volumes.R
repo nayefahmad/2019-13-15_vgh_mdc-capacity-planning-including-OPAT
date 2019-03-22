@@ -27,6 +27,8 @@ p1.volumes <-
   geom_boxplot() +
   scale_y_continuous(limits = c(0,25), 
                      breaks = seq(0, 25, 2)) + 
+  labs(title = "VGH MDC: Distribution of daily volumes by treatment type", 
+       subtitle = "3rd Apr 2017 to 29th Sep 2017") + 
   
   theme_light() +
   theme(panel.grid.minor = element_line(colour = "grey95"), 
@@ -42,11 +44,24 @@ p2.durations <-
   geom_boxplot() + 
   scale_y_continuous(limits = c(0,60), 
                      breaks = seq(0, 60, 5)) +
+  
+  labs(title = "VGH MDC: Distribution of daily total hours by treatment type", 
+       subtitle = "3rd Apr 2017 to 29th Sep 2017") + 
+  
   theme_light() +
   theme(panel.grid.minor = element_line(colour = "grey95"), 
         panel.grid.major = element_line(colour = "grey95")); p2.durations
 
 
+
+# save results: 
+pdf(here::here("results", 
+               "dst", 
+               "2019-03-21_vgh_mdc-volume-and-duration-distributions.pdf"), 
+    width = 10)
+p1.volumes
+p2.durations
+dev.off()
 
 
 # 3. IRON AND IVIG: ----------------
@@ -66,12 +81,14 @@ p3.iron_ivig_vol <-
   scale_x_discrete(limits = seq(0,13,1), 
                    breaks = seq(0,13,1), 
                    expand = c(0,0)) + 
-  scale_y_discrete(limits = seq(0,12,1), 
-                   breaks = seq(0,12,1), 
+  scale_y_discrete(limits = seq(0,11,1), 
+                   breaks = seq(0,11,1), 
                    expand = c(0,0)) + 
   # coord_cartesian(xlim = c(0,13), 
   #                 ylim = c(0,11)) + 
   
+  labs(title = "VGH MDC: Volumes of IRON and IVIG, by day", 
+       subtitle = "3rd Apr 2017 to 29th Sep 2017") + 
   
   theme_light() +
   theme(panel.grid.minor = element_line(colour = "grey95"), 
@@ -89,9 +106,12 @@ p4.iron_ivig_vol_2 <-
   scale_x_discrete(limits = seq(0,13,1), 
                    breaks = seq(0,13,1), 
                    expand = c(0,0)) + 
-  scale_y_discrete(limits = seq(0,12,1), 
-                   breaks = seq(0,12,1), 
+  scale_y_discrete(limits = seq(0,11,1), 
+                   breaks = seq(0,11,1), 
                    expand = c(0,0)) + 
+  
+  labs(title = "VGH MDC: Volumes of IRON and IVIG, by day (excluding weekends)", 
+       subtitle = "3rd Apr 2017 to 29th Sep 2017") + 
   
   theme_light() +
   theme(panel.grid.minor = element_line(colour = "grey95"), 
@@ -109,18 +129,14 @@ p5.iron_ivig_dur <-
   ggplot(aes(x = IRON, 
              y = IVIG)) + 
   geom_bin2d() + 
-  # scale_x_discrete(limits = seq(0,13,1), 
-  #                  breaks = seq(0,13,1), 
-  #                  expand = c(0,0)) + 
-  # scale_y_discrete(limits = seq(0,12,1), 
-  #                  breaks = seq(0,12,1), 
-  #                  expand = c(0,0)) + 
-  
+  labs(title = "VGH MDC: Total hours of IRON and IVIG, by day (excluding weekends)", 
+       subtitle = "3rd Apr 2017 to 29th Sep 2017") + 
   theme_light() +
   theme(panel.grid.minor = element_line(colour = "grey95"), 
         panel.grid.major = element_line(colour = "grey95")); p5.iron_ivig_dur
 
 
+# save results: 
 pdf(here::here("results", 
                "dst", 
                "2019-03-21_vgh_mdc-iron-and-ivig-volumes-and-durations.pdf"), 

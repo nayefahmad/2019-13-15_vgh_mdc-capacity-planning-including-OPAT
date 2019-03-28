@@ -10,6 +10,7 @@
 # rm(list = ls())
 
 library(broom)
+library(ggfortify)
 
 # 1. Read in data: ------------------------------
 source(here::here("src", 
@@ -56,19 +57,26 @@ m1.pca$rotation  # gives the loadings
 m1.pca$x  # coordinates of every day with respect to the PCs
 
 biplot(m1.pca, 
-       main = "VGH MDC - Total hours by day (exluding weekends, and excluding EDIV)")
+       main = "VGH MDC - Total hours by day \n(exluding weekends, and excluding EDIV)\nVariance explained: 19.7%\n", 
+       sub = "\n\nEach point is a single day, \nprojected onto first 2 principal components")
 
 
-# using ggplot: 
-tidy(m1.pca) %>% 
-  spread(key = PC, 
-         val = value) %>% 
-  ggplot(aes(x = `1`, 
-             y = `2`)) + 
-  geom_point() + 
-  theme_light() +
-  theme(panel.grid.minor = element_line(colour = "grey95"), 
-      panel.grid.major = element_line(colour = "grey95"))
+pdf(here::here("results", 
+               "dst", 
+               "2019-03-27_vgh_mdc-pca-biplot.pdf"), 
+    width = 10, 
+    height = 10)
+biplot(m1.pca, 
+       main = "VGH MDC - Total hours by day \n(exluding weekends, and excluding EDIV)\nVariance explained: 19.7%\n", 
+       sub = "\n\nEach point is a single day, \nprojected onto first 2 principal components")
+dev.off()
+
+
+
+# using ggfortify: 
+autoplot(m1.pca, 
+         loadings = TRUE, 
+         loadings.labels = TRUE)
       
 
 

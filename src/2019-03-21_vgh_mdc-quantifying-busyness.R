@@ -31,7 +31,7 @@ df2.1_dur_wide <-
   # add date_id: 
   mutate(date_id = paste0("day_", 1:n())) %>% 
   
-  # todo: drop EDIV?? 
+  # > todo: drop EDIV?? -----
   select(-EDIV)
 
 
@@ -124,22 +124,108 @@ tail(df4.dist_from_origin %>%
 #   df4.dist_from_origin %>% filter(Date == "2017-09-13")    # 67.5 
 
 
-# 5. plot distances from origin: ---------------
+# 5. plot total hours distributions: ---------------
 df4.dist_from_origin %>% 
+  filter(!day_of_week %in% c("Saturday", "Sunday")) %>%  
   ggplot(aes(x = manhattan_dist_from_origin)) + 
-  geom_histogram(fill = "skyblue4") + 
+  geom_histogram(fill = "skyblue4", 
+                 col = "black", 
+                 binwidth = 5, 
+                 boundary = 0, 
+                 closed = "left") + 
   theme_light() + 
-  labs(title = "Distribution of Manhattan distances from origin", 
-       subtitle = "Distance measures cumulative total hours across all treatments for a single day") + 
+  scale_x_continuous(limits = c(-5,90), 
+                     breaks = seq(0,90, 10)) + 
+  labs(title = "Distribution of daily total treatment hours (excl. weekends, EDIV cases)", 
+       subtitle = "Total hours measures treatment hours across all treatments for a single day \n10% of days have total hours > 80 hours", 
+       caption = "\n\n Daily total treatment hours is equivalent to the Manhattan distance from origin") + 
   theme(panel.grid.minor = element_line(colour = "grey95"), 
       panel.grid.major = element_line(colour = "grey95"))
       
 
+# save output
+ggsave(here::here("results", 
+                  "dst", 
+                  "2019-03-29_total-hours-distribution.pdf"))
+
+# cdf of Manhattan distances: 
+df4.dist_from_origin %>% 
+  filter(!day_of_week %in% c("Saturday", "Sunday")) %>%  
+  ggplot(aes(x = manhattan_dist_from_origin)) + 
+  stat_ecdf() + 
+  
+  geom_hline(yintercept = .90, 
+             col = "firebrick") + 
+
+  theme_light() + 
+  coord_cartesian(xlim = c(40, 100)) + 
+  labs(title = "Distribution of Manhattan distances from origin (excl weekends, EDIV cases)", 
+       subtitle = "Distance measures cumulative total hours across all treatments for a single day") + 
+  theme(panel.grid.minor = element_line(colour = "grey95"), 
+        panel.grid.major = element_line(colour = "grey95"))
+
+
+# save output
+ggsave(here::here("results", 
+                  "dst", 
+                  "2019-03-29_total-hours-ecdf.pdf"))
+
+
+
+# 6. plot volumes distributions: ------------
+
+# > 6.1 histogram: -----
+df1.volumes %>% 
+  group_by(Date) %>% 
+  summarise(sum(volume)) %>% 
+  rename(total_volume = `sum(volume)`) %>% 
+  
+  ggplot(aes(x = total_volume)) + 
+  
+  geom_histogram(fill = "skyblue4", 
+                 col = "black", 
+                 binwidth = 2, 
+                 boundary = 0, 
+                 closed = "left") + 
+  
+  geom_vline(xintercept = 32, 
+             col = "firebrick") + 
+  
+  theme_light() + 
+  scale_x_continuous(limits = c(0,40), 
+                     breaks = seq(0,40, 2)) + 
+  labs(title = "Distribution of daily total treatment volumes (excl. weekends)", 
+       subtitle = "Typical day: 32 treatments") + 
+  theme(panel.grid.minor = element_line(colour = "grey95"), 
+        panel.grid.major = element_line(colour = "grey95"))
+
+
+
+# 6.2 ecdf: --------------------
+df1.volumes %>% 
+  group_by(Date) %>% 
+  summarise(sum(volume)) %>% 
+  rename(total_volume = `sum(volume)`) %>% 
+  
+  ggplot(aes(x = total_volume)) + 
+  
+  stat_ecdf() + 
+  
+  geom_hline(yintercept = 0.90, 
+             col = "firebrick") + 
+  
+  theme_light() + 
+  scale_x_continuous(limits = c(0,40), 
+                     breaks = seq(0,40, 2)) + 
+  labs(title = "Distribution of daily total treatment volumes (excl. weekends)", 
+       subtitle = "Typical day: 32 treatments") + 
+  theme(panel.grid.minor = element_line(colour = "grey95"), 
+        panel.grid.major = element_line(colour = "grey95"))
 
 
 
 
-# 6. write outpus: ------------
+# 7. write outpus: ------------
 write_csv(df3.durations.dist,
       here::here("results", 
              "dst", 
@@ -152,3 +238,4 @@ write_csv(df4.dist_from_origin,
                      "2019-03-21_distances-from-origin.csv"))
 
 
+ggsave()

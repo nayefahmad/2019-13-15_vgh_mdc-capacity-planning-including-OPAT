@@ -195,10 +195,15 @@ df1.volumes %>%
   scale_x_continuous(limits = c(0,40), 
                      breaks = seq(0,40, 2)) + 
   labs(title = "Distribution of daily total treatment volumes (excl. weekends)", 
-       subtitle = "Typical day: 32 treatments") + 
+       subtitle = "Typical day scenario (2017-07-06): 32 treatments \n\n90th percentile of daily volumes: 37 cases \n50th percentile: 29 cases") + 
   theme(panel.grid.minor = element_line(colour = "grey95"), 
         panel.grid.major = element_line(colour = "grey95"))
 
+
+# save output
+ggsave(here::here("results", 
+                  "dst", 
+                  "2019-03-29_total-volume-distribution.pdf"))
 
 
 # 6.2 ecdf: --------------------
@@ -217,11 +222,15 @@ df1.volumes %>%
   theme_light() + 
   scale_x_continuous(limits = c(0,40), 
                      breaks = seq(0,40, 2)) + 
-  labs(title = "Distribution of daily total treatment volumes (excl. weekends)", 
-       subtitle = "Typical day: 32 treatments") + 
+  labs(title = "Cumulative distribution of daily total treatment volumes (excl. weekends)", 
+       subtitle = "10% of days have 37 or more treatments") + 
   theme(panel.grid.minor = element_line(colour = "grey95"), 
         panel.grid.major = element_line(colour = "grey95"))
 
+# save output
+ggsave(here::here("results", 
+                  "dst", 
+                  "2019-03-29_total-volume-ecdf.pdf"))
 
 
 

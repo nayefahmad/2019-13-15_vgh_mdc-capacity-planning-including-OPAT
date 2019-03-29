@@ -1,7 +1,7 @@
 
 
 #***************************************************
-# VGH MDC - Distributions of treatment volumes and durations 
+# VGH MDC - Reading in volumes and durations data  
 # 2019-03-21
 # Nayef 
 
